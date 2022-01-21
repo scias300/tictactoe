@@ -8,6 +8,11 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    visibility: hidden;
+}
+
+.container-visible {
+    visibility: visible;
 }
 
 .field {
@@ -48,13 +53,33 @@
     background-repeat: no-repeat;
 }
 
-.start {
+.button {
     font-size: 36px;
     width: 200px;
     height: 100px;
     margin-top: 20px;
     z-index: 100;
     border: 2px solid rgb(41, 41, 46);
+    border-radius: 10px;
+}
+
+.button:hover {
+    background-color: rgb(218, 218, 218);
+}
+
+.menu {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mode-1 {
+    margin-right: 10px;
 }
 
 .overlay {
@@ -128,6 +153,10 @@
     display: block;
 }
 
+.hidden {
+    display: none;
+}
+
 @media (max-width: 540px) {
     .field {
         width: 300px;
@@ -149,5 +178,13 @@
     .overlay {
         font-size: 55px;
         padding-top: 150px;
+    }
+
+    .menu {
+        flex-direction: column;
+    }
+
+    .mode-1 {
+        margin-right: 0;
     }
 }

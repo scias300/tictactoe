@@ -7,14 +7,26 @@ let tie = 0;
 let crosses = [];
 let zeros = [];
 
-start.addEventListener('click', () => {
-    location.reload();
-});
+start.addEventListener('click', startGame);
 
 cells.forEach((item, index) => {
     item.setAttribute('num', index + 1);
     item.addEventListener('click', makeMove);
 });
+
+function startGame() {
+    counter = 0;
+    tie = 0;
+    crosses = [];
+    zeros = [];
+    cells.forEach(item => {
+        item.classList.remove('cross');
+        item.classList.remove('zero');
+        item.addEventListener('click', makeMove);
+    });
+    overlay.classList.remove('visible');
+    text.textContent = '';
+}
 
 function makeMove(event) {
     if (counter == 0) {

@@ -22,6 +22,7 @@ const wins = [[1, 2, 3], [4, 5, 6], [7, 8, 9], [1, 4, 7], [2, 5, 8], [3, 6, 9], 
 
 easy.addEventListener('click', startGameOne);
 normal.addEventListener('click', startGameTwo);
+hard.addEventListener('click', startGameThree);
 
 onePlayer.addEventListener('click', () => {
     menu.classList.add('hidden');
@@ -54,6 +55,18 @@ function startGameTwo() {
     container.classList.add('container-visible');
     replay.addEventListener('click', createField);
     replay.addEventListener('click', startGameTwo);
+    menu.classList.add('hidden');
+    difficulty.classList.remove('container-visible');
+}
+
+function startGameThree() {
+    createField();
+    cells.forEach(item => {
+        item.addEventListener('click', makeMoveAiHard);
+    });
+    container.classList.add('container-visible');
+    replay.addEventListener('click', createField);
+    replay.addEventListener('click', startGameThree);
     menu.classList.add('hidden');
     difficulty.classList.remove('container-visible');
 }
@@ -239,6 +252,116 @@ function makeMoveAiNormal(event) {
         randomElem.classList.add('zero');
         zeros.push(random);
         randomElem.removeEventListener('click', makeMoveAiNormal);
+        vacants = vacants.filter((elem) => elem != random);
+        isTie();
+        isWin();
+    }
+}
+
+function makeMoveAiHard(event) {
+    let num = +this.getAttribute('num');
+    event.target.classList.add('cross');
+    crosses.push(num);
+    event.target.removeEventListener('click', makeMoveAiHard);
+    vacants = vacants.filter((item) => item != num);
+    isTie();
+    isWin();
+    if (win === false && tie < 9) {
+        if (vacants.includes(5)) {
+            let random = 5;
+            let randomElem = document.querySelector(`.cell-${random}`);
+            randomElem.classList.add('zero');
+            zeros.push(random);
+            randomElem.removeEventListener('click', makeMoveAiHard);
+            vacants = vacants.filter((elem) => elem != random);
+            isTie();
+            isWin();
+            return false;
+        }
+        for (let item of wins) {
+            if (zeros.includes(item[0]) && zeros.includes(item[1]) && vacants.includes(item[2])) {
+                let random = item[2];
+                let randomElem = document.querySelector(`.cell-${random}`);
+                randomElem.classList.add('zero');
+                zeros.push(random);
+                randomElem.removeEventListener('click', makeMoveAiNormal);
+                vacants = vacants.filter((elem) => elem != random);
+                isTie();
+                isWin();
+                return false;
+            } else if (zeros.includes(item[0]) && zeros.includes(item[2]) && vacants.includes(item[1])) {
+                let random = item[1];
+                let randomElem = document.querySelector(`.cell-${random}`);
+                randomElem.classList.add('zero');
+                zeros.push(random);
+                randomElem.removeEventListener('click', makeMoveAiNormal);
+                vacants = vacants.filter((elem) => elem != random);
+                isTie();
+                isWin();
+                return false;
+            } else if (zeros.includes(item[1]) && zeros.includes(item[2]) && vacants.includes(item[0])) {
+                let random = item[0];
+                let randomElem = document.querySelector(`.cell-${random}`);
+                randomElem.classList.add('zero');
+                zeros.push(random);
+                randomElem.removeEventListener('click', makeMoveAiNormal);
+                vacants = vacants.filter((elem) => elem != random);
+                isTie();
+                isWin();
+                return false;
+            }
+        }
+        for (let item of wins) {
+            if (crosses.includes(item[0]) && crosses.includes(item[1]) && vacants.includes(item[2]) == true && zeros.includes(item[2]) !== true) {
+                let random = item[2];
+                let randomElem = document.querySelector(`.cell-${random}`);
+                randomElem.classList.add('zero');
+                zeros.push(random);
+                randomElem.removeEventListener('click', makeMoveAiNormal);
+                vacants = vacants.filter((elem) => elem != random);
+                isTie();
+                isWin();
+                return false;
+            } else if (crosses.includes(item[0]) && crosses.includes(item[2]) && vacants.includes(item[1]) == true && zeros.includes(item[1]) !== true) {
+                let random = item[1];
+                let randomElem = document.querySelector(`.cell-${random}`);
+                randomElem.classList.add('zero');
+                zeros.push(random);
+                randomElem.removeEventListener('click', makeMoveAiNormal);
+                vacants = vacants.filter((elem) => elem != random);
+                isTie();
+                isWin();
+                return false;
+            } else if (crosses.includes(item[1]) && crosses.includes(item[2]) && vacants.includes(item[0]) == true && zeros.includes(item[0]) !== true) {
+                let random = item[0];
+                let randomElem = document.querySelector(`.cell-${random}`);
+                randomElem.classList.add('zero');
+                zeros.push(random);
+                randomElem.removeEventListener('click', makeMoveAiNormal);
+                vacants = vacants.filter((elem) => elem != random);
+                isTie();
+                isWin();
+                return false;
+            }
+        }
+        for (let item of vacants) {
+            if (item % 2 !== 0) {
+                let random = item;
+                let randomElem = document.querySelector(`.cell-${random}`);
+                randomElem.classList.add('zero');
+                zeros.push(random);
+                randomElem.removeEventListener('click', makeMoveAiNormal);
+                vacants = vacants.filter((elem) => elem != random);
+                isTie();
+                isWin();
+                return false;
+            }
+        }
+        let random = vacants[Math.floor(Math.random() * vacants.length)];
+        let randomElem = document.querySelector(`.cell-${random}`);
+        randomElem.classList.add('zero');
+        zeros.push(random);
+        randomElem.removeEventListener('click', makeMoveAiHard);
         vacants = vacants.filter((elem) => elem != random);
         isTie();
         isWin();

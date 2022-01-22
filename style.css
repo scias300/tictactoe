@@ -11,10 +11,6 @@
     visibility: hidden;
 }
 
-.container-visible {
-    visibility: visible;
-}
-
 .field {
     width: 450px;
     height: 450px;
@@ -65,6 +61,19 @@
 
 .button:hover {
     background-color: rgb(218, 218, 218);
+}
+
+.difficulty {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    visibility: hidden;
 }
 
 .menu {
@@ -155,6 +164,10 @@
 
 .hidden {
     display: none;
+}
+
+.container-visible {
+    visibility: visible;
 }
 
 @media (max-width: 540px) {

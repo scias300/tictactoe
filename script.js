@@ -8,16 +8,27 @@ let twoPlayer = document.querySelector('.mode-2');
 let menu = document.querySelector('.menu');
 let newGame = document.querySelector('.new-game');
 let container = document.querySelector('.container');
+let difficulty = document.querySelector('.difficulty');
+let easy = document.querySelector('.easy');
+let normal = document.querySelector('.normal');
+let hard = document.querySelector('.hard');
 let counter = 0;
 let tie = 0;
 let crosses = [];
 let zeros = [];
 let win = false;
 let vacants = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+const wins = [[1, 2, 3], [4, 5, 6], [7, 8, 9], [1, 4, 7], [2, 5, 8], [3, 6, 9], [1, 5, 9], [3, 5, 7]];
 
-onePlayer.addEventListener('click', startGameOne);
+easy.addEventListener('click', startGameOne);
+normal.addEventListener('click', startGameTwo);
 
-twoPlayer.addEventListener('click', startGameTwo);
+onePlayer.addEventListener('click', () => {
+    menu.classList.add('hidden');
+    difficulty.classList.add('container-visible');
+});
+
+twoPlayer.addEventListener('click', startGameFour);
 
 newGame.addEventListener('click', () => {
     location.reload();
@@ -26,22 +37,35 @@ newGame.addEventListener('click', () => {
 function startGameOne() {
     createField();
     cells.forEach(item => {
-        item.addEventListener('click', makeMoveAi);
+        item.addEventListener('click', makeMoveAiEasy);
     });
     container.classList.add('container-visible');
     replay.addEventListener('click', createField);
     replay.addEventListener('click', startGameOne);
     menu.classList.add('hidden');
+    difficulty.classList.remove('container-visible');
 }
 
 function startGameTwo() {
+    createField();
+    cells.forEach(item => {
+        item.addEventListener('click', makeMoveAiNormal);
+    });
+    container.classList.add('container-visible');
+    replay.addEventListener('click', createField);
+    replay.addEventListener('click', startGameTwo);
+    menu.classList.add('hidden');
+    difficulty.classList.remove('container-visible');
+}
+
+function startGameFour() {
     createField();
     cells.forEach(item => {
         item.addEventListener('click', makeMove);
     });
     container.classList.add('container-visible');
     replay.addEventListener('click', createField);
-    replay.addEventListener('click', startGameTwo);
+    replay.addEventListener('click', startGameFour);
     menu.classList.add('hidden');
 }
 
@@ -99,7 +123,6 @@ function isTie() {
 }
 
 function isWin() {
-    const wins = [[1, 2, 3], [4, 5, 6], [7, 8, 9], [1, 4, 7], [2, 5, 8], [3, 6, 9], [1, 5, 9], [3, 5, 7]];
     wins.forEach((item, index) => {
         if (crosses.includes(item[0]) && crosses.includes(item[1]) && crosses.includes(item[2])) {
             overlay.classList.add('visible');
@@ -116,11 +139,11 @@ function isWin() {
     });
 }
 
-function makeMoveAi(event) {
+function makeMoveAiEasy(event) {
     let num = +this.getAttribute('num');
     event.target.classList.add('cross');
     crosses.push(num);
-    event.target.removeEventListener('click', makeMoveAi);
+    event.target.removeEventListener('click', makeMoveAiEasy);
     vacants = vacants.filter((item) => item != num);
     isTie();
     isWin();
@@ -129,8 +152,94 @@ function makeMoveAi(event) {
         let randomElem = document.querySelector(`.cell-${random}`);
         randomElem.classList.add('zero');
         zeros.push(random);
-        randomElem.removeEventListener('click', makeMoveAi);
+        randomElem.removeEventListener('click', makeMoveAiEasy);
         vacants = vacants.filter((item) => item != random);
+        isTie();
+        isWin();
+    }
+}
+
+function makeMoveAiNormal(event) {
+    let num = +this.getAttribute('num');
+    event.target.classList.add('cross');
+    crosses.push(num);
+    event.target.removeEventListener('click', makeMoveAiNormal);
+    vacants = vacants.filter((item) => item != num);
+    isTie();
+    isWin();
+    if (win === false && tie < 9) {
+        for (let item of wins) {
+            if (zeros.includes(item[0]) && zeros.includes(item[1]) && vacants.includes(item[2])) {
+                let random = item[2];
+                let randomElem = document.querySelector(`.cell-${random}`);
+                randomElem.classList.add('zero');
+                zeros.push(random);
+                randomElem.removeEventListener('click', makeMoveAiNormal);
+                vacants = vacants.filter((elem) => elem != random);
+                isTie();
+                isWin();
+                return false;
+            } else if (zeros.includes(item[0]) && zeros.includes(item[2]) && vacants.includes(item[1])) {
+                let random = item[1];
+                let randomElem = document.querySelector(`.cell-${random}`);
+                randomElem.classList.add('zero');
+                zeros.push(random);
+                randomElem.removeEventListener('click', makeMoveAiNormal);
+                vacants = vacants.filter((elem) => elem != random);
+                isTie();
+                isWin();
+                return false;
+            } else if (zeros.includes(item[1]) && zeros.includes(item[2]) && vacants.includes(item[0])) {
+                let random = item[0];
+                let randomElem = document.querySelector(`.cell-${random}`);
+                randomElem.classList.add('zero');
+                zeros.push(random);
+                randomElem.removeEventListener('click', makeMoveAiNormal);
+                vacants = vacants.filter((elem) => elem != random);
+                isTie();
+                isWin();
+                return false;
+            }
+        }
+        for (let item of wins) {
+            if (crosses.includes(item[0]) && crosses.includes(item[1]) && vacants.includes(item[2]) == true && zeros.includes(item[2]) !== true) {
+                let random = item[2];
+                let randomElem = document.querySelector(`.cell-${random}`);
+                randomElem.classList.add('zero');
+                zeros.push(random);
+                randomElem.removeEventListener('click', makeMoveAiNormal);
+                vacants = vacants.filter((elem) => elem != random);
+                isTie();
+                isWin();
+                return false;
+            } else if (crosses.includes(item[0]) && crosses.includes(item[2]) && vacants.includes(item[1]) == true && zeros.includes(item[1]) !== true) {
+                let random = item[1];
+                let randomElem = document.querySelector(`.cell-${random}`);
+                randomElem.classList.add('zero');
+                zeros.push(random);
+                randomElem.removeEventListener('click', makeMoveAiNormal);
+                vacants = vacants.filter((elem) => elem != random);
+                isTie();
+                isWin();
+                return false;
+            } else if (crosses.includes(item[1]) && crosses.includes(item[2]) && vacants.includes(item[0]) == true && zeros.includes(item[0]) !== true) {
+                let random = item[0];
+                let randomElem = document.querySelector(`.cell-${random}`);
+                randomElem.classList.add('zero');
+                zeros.push(random);
+                randomElem.removeEventListener('click', makeMoveAiNormal);
+                vacants = vacants.filter((elem) => elem != random);
+                isTie();
+                isWin();
+                return false;
+            }
+        }
+        let random = vacants[Math.floor(Math.random() * vacants.length)];
+        let randomElem = document.querySelector(`.cell-${random}`);
+        randomElem.classList.add('zero');
+        zeros.push(random);
+        randomElem.removeEventListener('click', makeMoveAiNormal);
+        vacants = vacants.filter((elem) => elem != random);
         isTie();
         isWin();
     }
